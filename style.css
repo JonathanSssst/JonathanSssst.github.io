@@ -637,6 +637,12 @@ img {
   letter-spacing: 0.18em;
 }
 
+.section-actions {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+}
+
 .text-button {
   padding: 4px 5px;
   border: 0;

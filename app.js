@@ -563,6 +563,7 @@
     searchSubmit: $(".search-submit"),
     bookmarks: $("#bookmarks"),
     manageBookmarks: $("#manageBookmarks"),
+    clipboardBookmark: $("#clipboardBookmark"),
     customizeDialog: $("#customizeDialog"),
     closeSheet: $("#closeSheet"),
     tabs: $$(".tab"),
@@ -634,10 +635,8 @@
   let previewToken = 0;
   let bookmarksRendered = false;
   let clipboardReadInFlight = false;
-  let clipboardAutoBlocked = false;
-  let clipboardGestureAttempted = false;
+  let clipboardPermissionGranted = false;
   let clipboardPromptedUrl = "";
-  let clipboardRetryTimer = 0;
 
   /* ---------------------------------------------
      Toast
@@ -2248,16 +2247,32 @@
 
   const clipboardBlockedByUi = () => document.hidden || Boolean(document.querySelector("dialog[open]"));
 
-  async function checkClipboard({ automatic = false } = {}) {
+  const clipboardReadAllowed = async () => {
+    if (clipboardPermissionGranted) return true;
+    if (!navigator.permissions || typeof navigator.permissions.query !== "function") {
+      return false;
+    }
+    try {
+      const status = await navigator.permissions.query({ name: "clipboard-read" });
+      clipboardPermissionGranted = status.state === "granted";
+      return clipboardPermissionGranted;
+    } catch {
+      return false;
+    }
+  };
+
+  async function checkClipboard() {
     if (!clipboardSupported || clipboardReadInFlight) return;
-    if (automatic && clipboardAutoBlocked) return;
-    if (automatic && !document.hasFocus()) return;
-    if (clipboardBlockedByUi()) return;
+    if (!document.hasFocus() || clipboardBlockedByUi()) return;
 
     clipboardReadInFlight = true;
     try {
+      // Never call readText() while the permission is still "prompt":
+      // that is what makes Chrome show the "查看剪贴板" dialog repeatedly.
+      if (!(await clipboardReadAllowed())) return;
+      if (clipboardBlockedByUi()) return;
+
       const text = await navigator.clipboard.readText();
-      clipboardAutoBlocked = false;
       if (clipboardBlockedByUi()) return;
 
       const url = externalUrlFromText(text);
@@ -2271,14 +2286,7 @@
         clipboardPromptedUrl = url;
         return;
       }
-      if (dom.toast.classList.contains("is-visible")) {
-        window.clearTimeout(clipboardRetryTimer);
-        clipboardRetryTimer = window.setTimeout(
-          () => checkClipboard({ automatic: true }),
-          3800
-        );
-        return;
-      }
+      if (dom.toast.classList.contains("is-visible")) return;
 
       clipboardPromptedUrl = url;
       let host = "";
@@ -2294,33 +2302,47 @@
         onAction: () => openBookmarkFromExternalUrl(url)
       });
     } catch {
-      clipboardAutoBlocked = true;
+      // Permission may have been revoked; fall back to the explicit button/paste.
+      clipboardPermissionGranted = false;
     } finally {
       clipboardReadInFlight = false;
     }
   }
 
-  if (clipboardSupported) {
-    window.setTimeout(() => checkClipboard({ automatic: true }), 1200);
-    window.addEventListener("focus", () => checkClipboard({ automatic: true }));
-    document.addEventListener("visibilitychange", () => {
-      if (!document.hidden) checkClipboard({ automatic: true });
-    });
+  async function readClipboardExplicit() {
+    if (!clipboardSupported) {
+      showToast("此浏览器不支持读取剪贴板，请在页面空白处粘贴网址");
+      return;
+    }
+    if (clipboardReadInFlight) return;
 
-    const retryClipboardAfterGesture = (event) => {
-      if (clipboardGestureAttempted) return;
-      if (event.type === "keydown") {
-        const target = event.target;
-        const typing = target instanceof HTMLElement
-          && (target.matches("input, textarea, select") || target.isContentEditable);
-        if (typing) return;
+    clipboardReadInFlight = true;
+    try {
+      const text = await navigator.clipboard.readText();
+      clipboardPermissionGranted = true;
+      const url = externalUrlFromText(text);
+      if (!url) {
+        showToast("剪贴板中没有可识别的网址");
+        return;
       }
-      clipboardGestureAttempted = true;
-      clipboardAutoBlocked = false;
-      checkClipboard();
-    };
-    document.addEventListener("pointerdown", retryClipboardAfterGesture, { capture: true });
-    document.addEventListener("keydown", retryClipboardAfterGesture, { capture: true });
+      clipboardPromptedUrl = url;
+      openBookmarkFromExternalUrl(text);
+    } catch {
+      clipboardPermissionGranted = false;
+      showToast("无法读取剪贴板，请在页面空白处粘贴网址");
+    } finally {
+      clipboardReadInFlight = false;
+    }
+  }
+
+  dom.clipboardBookmark.addEventListener("click", readClipboardExplicit);
+
+  if (clipboardSupported) {
+    window.setTimeout(checkClipboard, 1200);
+    window.addEventListener("focus", checkClipboard);
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden) checkClipboard();
+    });
   }
 
   document.addEventListener("paste", (event) => {
