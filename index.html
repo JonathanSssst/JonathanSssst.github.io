@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="zh-CN" data-preset="aurora">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#0b1718">
+  <meta name="description" content="栖页——一个安静、可自定义的浏览器起始页。">
+  <title>栖页 · 开始</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <svg class="svg-sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <symbol id="i-spark" viewBox="0 0 24 24">
+      <path d="M12 2c.72 5.68 4.32 9.28 10 10-5.68.72-9.28 4.32-10 10-.72-5.68-4.32-9.28-10-10 5.68-.72 9.28-4.32 10-10Z"/>
+    </symbol>
+    <symbol id="i-image" viewBox="0 0 24 24">
+      <rect x="3" y="3" width="18" height="18" rx="2.5"/><circle cx="9" cy="9" r="1.7"/><path d="m21 15-4.8-4.8L5 21"/>
+    </symbol>
+    <symbol id="i-bookmark" viewBox="0 0 24 24">
+      <path d="M6.5 3.5h11a1 1 0 0 1 1 1V21l-6.5-4-6.5 4V4.5a1 1 0 0 1 1-1Z"/>
+    </symbol>
+    <symbol id="i-sliders" viewBox="0 0 24 24">
+      <path d="M3 6h10.5M18 6h3M3 12h4M11.5 12H21M3 18h10.5M18 18h3"/>
+      <circle cx="16" cy="6" r="2"/><circle cx="9.5" cy="12" r="2"/><circle cx="16" cy="18" r="2"/>
+    </symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4.2-4.2"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-arrow-up-right" viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></symbol>
+    <symbol id="i-chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24">
+      <path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>
+    </symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24">
+      <path d="M3 6h18M8 6V4h8v2M19 6l-1 15H6L5 6M10 11v5M14 11v5"/>
+    </symbol>
+    <symbol id="i-upload" viewBox="0 0 24 24">
+      <path d="M12 16V3M7 8l5-5 5 5M4 20h16"/>
+    </symbol>
+    <symbol id="i-link" viewBox="0 0 24 24">
+      <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+      <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+    </symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/>
+    </symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="i-grip" viewBox="0 0 24 24">
+      <circle cx="9" cy="6" r="1.3" fill="currentColor" stroke="none"/>
+      <circle cx="15" cy="6" r="1.3" fill="currentColor" stroke="none"/>
+      <circle cx="9" cy="12" r="1.3" fill="currentColor" stroke="none"/>
+      <circle cx="15" cy="12" r="1.3" fill="currentColor" stroke="none"/>
+      <circle cx="9" cy="18" r="1.3" fill="currentColor" stroke="none"/>
+      <circle cx="15" cy="18" r="1.3" fill="currentColor" stroke="none"/>
+    </symbol>
+  </svg>
+
+  <div class="backdrop" id="backdrop" aria-hidden="true">
+    <div class="wallpaper-art" id="wallpaperArt"></div>
+    <div class="wallpaper-photo" id="wallpaperPhoto"></div>
+    <div class="wallpaper-veil"></div>
+    <div class="wallpaper-grain"></div>
+    <div class="wallpaper-shade" id="wallpaperShade"></div>
+  </div>
+
+  <header class="topbar">
+    <a class="brand" href="./index.html" aria-label="栖页 · 刷新主页">
+      <span class="brand-mark"><svg class="icon icon--spark"><use href="#i-spark"/></svg></span>
+      <span class="brand-name">栖页</span>
+    </a>
+    <div class="top-actions" role="group" aria-label="个性化">
+      <button class="icon-button" type="button" data-open-panel="wallpaper" aria-label="更换壁纸" title="更换壁纸">
+        <svg class="icon"><use href="#i-image"/></svg>
+      </button>
+      <button class="icon-button" type="button" data-open-panel="bookmarks" aria-label="管理书签" title="管理书签">
+        <svg class="icon"><use href="#i-bookmark"/></svg>
+      </button>
+      <button class="icon-button" type="button" data-open-panel="settings" aria-label="设置" title="设置">
+        <svg class="icon"><use href="#i-sliders"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="page">
+    <h1 class="sr-only">栖页起始页</h1>
+    <section class="hero" aria-label="时间与搜索">
+      <div class="date-line">
+        <span class="date-rule" aria-hidden="true"></span>
+        <p id="dateText">正在读取时间</p>
+        <span class="date-rule" aria-hidden="true"></span>
+      </div>
+
+      <time class="clock" id="clock" datetime="">
+        <span id="clockMain">--:--</span><span class="clock-seconds" id="clockSeconds">:--</span><span class="clock-period" id="clockPeriod" hidden>AM</span>
+      </time>
+
+      <p class="greeting" id="greeting">愿你今天，松弛而专注。</p>
+
+      <form class="search" id="searchForm" role="search" autocomplete="off">
+        <button class="engine-button" id="engineButton" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="engineMenu" aria-label="选择搜索引擎">
+          <span class="engine-logo" id="engineLogo">B</span>
+          <svg class="icon engine-chevron"><use href="#i-chevron-down"/></svg>
+        </button>
+        <label class="sr-only" for="searchInput">搜索或输入网址</label>
+        <input class="search-input" id="searchInput" name="q" type="text" inputmode="search" enterkeyhint="search" spellcheck="false" autocapitalize="off" placeholder="搜索，或输入网址">
+        <kbd class="search-kbd" id="searchKbd">/</kbd>
+        <button class="search-submit" type="submit" aria-label="搜索">
+          <svg class="icon"><use href="#i-search"/></svg>
+        </button>
+        <div class="engine-menu" id="engineMenu" role="listbox" aria-label="搜索引擎" hidden></div>
+      </form>
+    </section>
+
+    <section class="shortcuts" aria-labelledby="shortcutsTitle">
+      <div class="section-head">
+        <h2 id="shortcutsTitle">快捷访问</h2>
+        <button class="text-button" id="manageBookmarks" type="button">管理</button>
+      </div>
+      <div class="bookmarks" id="bookmarks"></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p class="footer-note">
+      <svg class="icon" aria-hidden="true"><use href="#i-shield"/></svg>
+      <span>书签与壁纸仅保存在此设备</span>
+    </p>
+    <p class="footer-hint">
+      <span><kbd>/</kbd> 搜索</span>
+      <span class="footer-dot" aria-hidden="true">·</span>
+      <span><kbd>Esc</kbd> 关闭</span>
+      <span class="footer-dot" aria-hidden="true">·</span>
+      <span>拖入图片换壁纸 · 拖入网址加书签</span>
+    </p>
+  </footer>
+
+  <dialog class="sheet" id="customizeDialog" aria-labelledby="sheetTitle">
+    <div class="sheet-inner">
+      <header class="sheet-head">
+        <div>
+          <p class="eyebrow">PERSONALIZE</p>
+          <h2 id="sheetTitle">个性化</h2>
+        </div>
+        <button class="icon-button sheet-close" type="button" id="closeSheet" aria-label="关闭">
+          <svg class="icon"><use href="#i-close"/></svg>
+        </button>
+      </header>
+
+      <div class="tabs" role="tablist" aria-label="个性化分类">
+        <button class="tab" type="button" role="tab" id="tab-wallpaper" aria-selected="true" aria-controls="panel-wallpaper" data-tab="wallpaper">壁纸</button>
+        <button class="tab" type="button" role="tab" id="tab-bookmarks" aria-selected="false" aria-controls="panel-bookmarks" data-tab="bookmarks" tabindex="-1">书签</button>
+        <button class="tab" type="button" role="tab" id="tab-settings" aria-selected="false" aria-controls="panel-settings" data-tab="settings" tabindex="-1">设置</button>
+      </div>
+
+      <div class="sheet-scroll" id="sheetScroll">
+        <section class="tab-panel" id="panel-wallpaper" role="tabpanel" aria-labelledby="tab-wallpaper" data-panel="wallpaper">
+          <div class="group">
+            <div class="group-head">
+              <h3>内置壁纸</h3>
+              <span class="status-chip" id="wallpaperStatus">极光 · 内置</span>
+            </div>
+            <div class="preset-grid" id="presetGrid"></div>
+          </div>
+
+          <div class="group">
+            <h3>自定义图片</h3>
+            <button class="upload-card" id="uploadButton" type="button">
+              <span class="upload-icon"><svg class="icon"><use href="#i-upload"/></svg></span>
+              <span class="upload-copy">
+                <strong>上传本地图片</strong>
+                <span>JPG、PNG、WebP · 自动压缩至合适尺寸</span>
+              </span>
+            </button>
+            <input id="wallpaperFile" type="file" accept="image/jpeg,image/png,image/webp,image/avif,image/gif" hidden>
+            <div class="url-row">
+              <label class="sr-only" for="wallpaperUrl">图片网址</label>
+              <svg class="icon url-icon" aria-hidden="true"><use href="#i-link"/></svg>
+              <input class="text-input" id="wallpaperUrl" type="url" inputmode="url" spellcheck="false" placeholder="或粘贴图片网址">
+              <button class="small-button" id="applyWallpaperUrl" type="button">应用</button>
+            </div>
+            <p class="hint">也可以把图片直接拖进页面。图片只会保存在你的浏览器中。</p>
+          </div>
+
+          <div class="group">
+            <h3>画面调整</h3>
+            <div class="slider-row">
+              <label for="blurRange">柔化</label>
+              <input id="blurRange" type="range" min="0" max="30" step="1" value="0" aria-describedby="blurValue">
+              <output id="blurValue" for="blurRange">0</output>
+            </div>
+            <div class="slider-row">
+              <label for="dimRange">遮罩</label>
+              <input id="dimRange" type="range" min="0" max="70" step="1" value="26" aria-describedby="dimValue">
+              <output id="dimValue" for="dimRange">26</output>
+            </div>
+            <p class="hint">柔化仅对自定义图片生效；遮罩可以提升文字可读性。</p>
+          </div>
+
+          <button class="subtle-danger" id="resetWallpaper" type="button">恢复默认壁纸</button>
+        </section>
+
+        <section class="tab-panel" id="panel-bookmarks" role="tabpanel" aria-labelledby="tab-bookmarks" data-panel="bookmarks" hidden>
+          <div class="group-head">
+            <h3>我的书签</h3>
+            <button class="small-button" id="panelAddBookmark" type="button">
+              <svg class="icon"><use href="#i-plus"/></svg>
+              添加
+            </button>
+          </div>
+          <p class="hint manage-hint">拖动每一行左侧的手柄可以调整顺序，改动会自动保存。</p>
+          <div class="manage-list" id="bookmarkList"></div>
+        </section>
+
+        <section class="tab-panel" id="panel-settings" role="tabpanel" aria-labelledby="tab-settings" data-panel="settings" hidden>
+          <div class="group">
+            <h3>时间</h3>
+            <label class="setting-row" for="toggleSeconds">
+              <span class="setting-copy"><strong>显示秒数</strong><span>让时间更精确一点</span></span>
+              <input class="sr-only switch-input" id="toggleSeconds" type="checkbox">
+              <span class="switch" aria-hidden="true"></span>
+            </label>
+            <label class="setting-row" for="toggle24h">
+              <span class="setting-copy"><strong>24 小时制</strong><span>关闭后使用 AM / PM</span></span>
+              <input class="sr-only switch-input" id="toggle24h" type="checkbox">
+              <span class="switch" aria-hidden="true"></span>
+            </label>
+          </div>
+
+          <div class="group">
+            <h3>搜索</h3>
+            <label class="setting-row" for="toggleNewTab">
+              <span class="setting-copy"><strong>在新标签页打开结果</strong><span>保留起始页，不打断当下</span></span>
+              <input class="sr-only switch-input" id="toggleNewTab" type="checkbox">
+              <span class="switch" aria-hidden="true"></span>
+            </label>
+          </div>
+
+          <div class="group">
+            <h3>问候</h3>
+            <label class="field" for="displayName">
+              <span>怎么称呼你</span>
+              <input class="text-input" id="displayName" type="text" maxlength="16" placeholder="留空即可" autocomplete="nickname">
+            </label>
+          </div>
+
+          <div class="group">
+            <h3>数据</h3>
+            <div class="action-grid">
+              <button class="button" id="exportButton" type="button">导出备份</button>
+              <button class="button" id="importButton" type="button">导入备份</button>
+            </div>
+            <input id="importFile" type="file" accept="application/json,.json" hidden>
+            <button class="subtle-danger reset-all" id="resetAll" type="button">恢复初始设置</button>
+            <p class="hint">备份包含书签、设置与自定义壁纸图片。所有内容都留在本机。</p>
+          </div>
+
+          <p class="version">栖页 <span>v1.0</span> · 本地运行</p>
+        </section>
+      </div>
+      <div class="inline-undo" id="inlineUndo" role="status" hidden>
+        <span id="inlineUndoText"></span>
+        <button type="button" id="inlineUndoAction">撤销</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog class="modal" id="bookmarkDialog" aria-labelledby="bookmarkDialogTitle">
+    <div class="modal-inner">
+      <header class="modal-head">
+        <div>
+          <p class="eyebrow">BOOKMARK</p>
+          <h2 id="bookmarkDialogTitle">添加书签</h2>
+        </div>
+        <button class="icon-button" type="button" id="closeBookmarkDialog" aria-label="关闭">
+          <svg class="icon"><use href="#i-close"/></svg>
+        </button>
+      </header>
+
+      <form id="bookmarkForm" novalidate>
+        <div class="bookmark-preview" aria-hidden="true">
+          <span class="preview-icon" id="previewIcon">
+            <span class="preview-fallback" id="previewFallback">书</span>
+            <img id="previewImage" alt="" hidden>
+          </span>
+          <span class="preview-meta">
+            <strong id="previewName">新书签</strong>
+            <span id="previewUrl">example.com</span>
+          </span>
+        </div>
+
+        <label class="field" for="bookmarkName">
+          <span>名称</span>
+          <input class="text-input" id="bookmarkName" type="text" maxlength="40" placeholder="例如：哔哩哔哩" autocomplete="off">
+        </label>
+        <label class="field" for="bookmarkUrl">
+          <span>网址</span>
+          <input class="text-input" id="bookmarkUrl" type="text" inputmode="url" spellcheck="false" placeholder="https://example.com" autocomplete="url">
+        </label>
+        <label class="field" for="bookmarkIcon">
+          <span>图标地址 <em>可选</em></span>
+          <input class="text-input" id="bookmarkIcon" type="text" inputmode="url" spellcheck="false" placeholder="留空自动获取网站图标" autocomplete="off">
+        </label>
+
+        <p class="form-error" id="bookmarkError" role="alert"></p>
+
+        <div class="modal-actions">
+          <button class="button" type="button" id="cancelBookmark">取消</button>
+          <button class="button button-primary" type="submit">保存</button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+
+  <dialog class="modal modal-confirm" id="confirmDialog" aria-labelledby="confirmTitle">
+    <div class="modal-inner">
+      <h2 id="confirmTitle">确认操作</h2>
+      <p id="confirmText" class="confirm-text"></p>
+      <div class="modal-actions">
+        <button class="button" type="button" id="confirmCancel">取消</button>
+        <button class="button button-danger" type="button" id="confirmOk">确认</button>
+      </div>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" popover="manual" role="status" aria-live="polite">
+    <span id="toastText"></span>
+    <button class="toast-action" id="toastAction" type="button" hidden>撤销</button>
+  </div>
+
+  <div class="drop-overlay" id="dropOverlay" aria-hidden="true">
+    <div class="drop-card">
+      <svg class="icon"><use id="dropIcon" href="#i-image"/></svg>
+      <strong id="dropTitle">松开，设为壁纸</strong>
+      <span id="dropHint">图片会自动压缩，并只保存在此设备</span>
+    </div>
+  </div>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
